@@ -15,3 +15,19 @@
             1 (recur [pair] (second pair) (rest xs-indexed))
             -1 (recur res max-val (rest xs-indexed))))
         res))))
+
+(defn rand-weighted
+  "Return a random key according to the weight value."
+  [m]
+  (let [xs (keys m)
+        ws (vals m)
+        v (rand (apply + ws))]
+    (loop [ws (vec (reductions + 0 ws))
+           left 0
+           right (count m)]
+      (if (= 1 (- right left))
+        (nth xs left)
+        (let [mid (quot (+ right left) 2)]
+          (cond
+            (< v (nth ws mid)) (recur ws left mid)
+            (>= v (nth ws mid)) (recur ws mid right)))))))
