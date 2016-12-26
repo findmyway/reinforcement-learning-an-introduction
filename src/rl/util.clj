@@ -16,6 +16,12 @@
             -1 (recur res max-val (rest xs-indexed))))
         res))))
 
+(defn find-index
+  "Find the index of x in xs. 
+  Return nil if not found"
+  [xs x]
+  (ffirst (filter #(= (second %) x) (map-indexed vector xs))))
+
 (defn rand-weighted
   "Return a random key according to the weight value."
   [m]
