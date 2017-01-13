@@ -1,7 +1,14 @@
-(ns rl.chapter03.grid-world
-  (:require [clojure.core.matrix :as m])
-  (:use debux.core))
+;; gorilla-repl.fileformat = 1
 
+;; @@
+(ns rl.chapter03.grid-world
+  (:require [clojure.core.matrix :as m]))
+;; @@
+;; =>
+;;; {"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}
+;; <=
+
+;; @@
 (let [N 5
       discount 0.9
       world (m/zero-matrix N N)
@@ -34,5 +41,27 @@
                         (mapv vec)))
       stop? (fn [[a b]] (< (m/abs (- (m/esum a) (m/esum b))) 0.0001))
       converge #(ffirst (filter stop? (partition 2 (iterate (partial iterate-fn %) world))))]
-  (prn (converge update-w1))
-  (prn (converge update-w2)))
+  (m/pm (converge update-w1))
+  (m/pm (converge update-w2)))
+
+;; @@
+;; ->
+;;; [[ 3.309  8.789  4.428  5.322  1.492]
+;;;  [ 1.522  2.992  2.250  1.908  0.547]
+;;;  [ 0.051  0.738  0.673  0.358 -0.403]
+;;;  [-0.974 -0.435 -0.355 -0.586 -1.183]
+;;;  [-1.858 -1.345 -1.229 -1.423 -1.975]]
+;;; [[21.977 24.419 21.977 19.419 17.477]
+;;;  [19.780 21.977 19.780 17.802 16.022]
+;;;  [17.802 19.780 17.802 16.022 14.419]
+;;;  [16.022 17.802 16.022 14.419 12.977]
+;;;  [14.419 16.022 14.419 12.977 11.680]]
+;;; 
+;; <-
+;; =>
+;;; {"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}
+;; <=
+
+;; @@
+
+;; @@

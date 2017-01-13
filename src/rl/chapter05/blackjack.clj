@@ -1,9 +1,24 @@
+;; gorilla-repl.fileformat = 1
+
+;; @@
 (ns rl.chapter05.blackjack
   (:require [clojure.core.matrix :as m]
             [clojure.core.matrix.stats :as stats]
             [rl.util :refer [argmax find-index]])
-  (:use [debux.core]))
+  (:use [plotly-clj.core]))
+;; @@
+;; =>
+;;; {"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}
+;; <=
 
+;; @@
+(online-init)
+;; @@
+;; =>
+;;; {"type":"html","content":"<script src=\"https://cdn.plot.ly/plotly-latest.min.js\" type=\"text/javascript\"></script>","value":"pr'ed value"}
+;; <=
+
+;; @@
 (defn bust? [x] (> x 21))
 (def not-bust? (complement bust?))
 
@@ -131,7 +146,12 @@
                        (update-m! states-nousableA-rewards #(+ r %) i j)))))]
     [(m/div states-usableA-rewards states-usableA-counts)
      (m/div states-nousableA-rewards states-nousableA-counts)]))
+;; @@
+;; =>
+;;; {"type":"html","content":"<span class='clj-var'>#&#x27;rl.chapter05.blackjack/data-for-fig-5-1</span>","value":"#'rl.chapter05.blackjack/data-for-fig-5-1"}
+;; <=
 
+;; @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (def state-action-value (m/mutable (m/zero-array [10 10 2 2])))
 (def state-action-count (m/mutable (m/add (m/zero-array [10 10 2 2]) 1)))
@@ -173,16 +193,61 @@
                           (update-m! state-action-value #(+ r %) i j k x)
                           (update-m! state-action-count inc i j k x)))]
     (dorun (map update-trace! p-traces))))
+;; @@
+;; =>
+;;; {"type":"html","content":"<span class='clj-var'>#&#x27;rl.chapter05.blackjack/update!</span>","value":"#'rl.chapter05.blackjack/update!"}
+;; <=
 
+;; @@
 ;; play 500000 times and update state-action-value and state-action-count
 (dorun (repeatedly 500000 update!))
+;; @@
+;; =>
+;;; {"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}
+;; <=
 
+;; @@
 ;; The result is a little different from the figure-5-3
 ;; I'm not sure  where the problem is.
 (let [sav (m/div state-action-value state-action-count)
-      idx (for [i (range 10) j (range 10)] [i j])]
-  [(map (fn [[i j]] (ffirst (argmax (m/select sav i j 0 :all)))) idx)
-   (map (fn [[i j]] (ffirst (argmax (m/select sav i j 1 :all)))) idx)])
+      idx (for [i (range 10) j (range 10)] [i j])
+      no-usableA-av (map (fn [[i j]] (apply max (m/select sav i j 0 :all))) idx)
+      no-usableA (map (fn [[i j]] (ffirst (argmax (m/select sav i j 0 :all)))) idx)
+      usableA (map (fn [[i j]] (ffirst (argmax (m/select sav i j 1 :all)))) idx)
+      usableA-av (map (fn [[i j]] (apply max (m/select sav i j 1 :all))) idx)]
+  (-> (plotly)
+      (add-heatmap :z (m/reshape usableA [10 10]))
+      (add-heatmap :z (m/reshape no-usableA [10 10]))
+      (subplot :nrow 1 :ncol 2)
+      (plot "RL-figure-5-3-a" :fileopt "overwrite")
+      embed-url))
+;; @@
+;; =>
+;;; {"type":"html","content":"<iframe height=\"600\" src=\"//plot.ly/~findmyway/122.embed\" width=\"800\"></iframe>","value":"pr'ed value"}
+;; <=
+
+;; @@
+;; The result is a little different from the figure-5-3
+;; I'm not sure  where the problem is.
+(let [sav (m/div state-action-value state-action-count)
+      idx (for [i (range 10) j (range 10)] [i j])
+      no-usableA-av (map (fn [[i j]] (apply max (m/select sav i j 0 :all))) idx)
+      no-usableA (map (fn [[i j]] (ffirst (argmax (m/select sav i j 0 :all)))) idx)
+      usableA (map (fn [[i j]] (ffirst (argmax (m/select sav i j 1 :all)))) idx)
+      usableA-av (map (fn [[i j]] (apply max (m/select sav i j 1 :all))) idx)]
+  (-> (plotly)
+      (add-surface :z (m/reshape no-usableA-av [10 10]) :scene "scene1")
+      (add-surface :z (m/reshape usableA-av [10 10]) :scene "scene2")
+      (set-layout :scene1 {:domain {:x [0 0.5] :y [0 1]}}
+                  :scene2 {:domain {:x [0.5 1] :y [0 1]}})
+      (plot "RL-figure-5-3-b" :fileopt "overwrite")
+      embed-url))
+;; @@
+;; =>
+;;; {"type":"html","content":"<iframe height=\"600\" src=\"//plot.ly/~findmyway/124.embed\" width=\"800\"></iframe>","value":"pr'ed value"}
+;; <=
+
+;; @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defn get-ratio-reward
@@ -221,3 +286,27 @@
         ordinary-sampling (mean-square-shift (map first samplings))
         weighted-sampling (mean-square-shift (map second samplings))]
     [ordinary-sampling weighted-sampling]))
+
+;; @@
+;; =>
+;;; {"type":"html","content":"<span class='clj-var'>#&#x27;rl.chapter05.blackjack/off-policy</span>","value":"#'rl.chapter05.blackjack/off-policy"}
+;; <=
+
+;; @@
+(let [[ordinary weighted] (off-policy 100)
+      idx (range 1 (inc (count ordinary)))]
+  (-> (plotly )
+      (add-scatter :x idx :y ordinary :name "ordinary-sampling")
+      (add-scatter :x idx :y weighted :name "weighted-sampling")
+      (set-layout :xaxis {:title "Episodes(log scale)" :type "log"}
+                  :yaxis {:title "Mean square error"})
+      (plot "RL-figure-5-4" :fileopt "overwrite")
+      embed-url))
+;; @@
+;; =>
+;;; {"type":"html","content":"<iframe height=\"600\" src=\"//plot.ly/~findmyway/126.embed\" width=\"800\"></iframe>","value":"pr'ed value"}
+;; <=
+
+;; @@
+ 
+;; @@

@@ -2,7 +2,34 @@
 
 Clojure code for Sutton & Barto's book [*Reinforcement Learning: An Introduction (2nd Edition)*](http://incompleteideas.net/sutton/book/the-book-2nd.html)
 
-## Usage
+## Contents
+
+### Chapter01
+
+- tic_tac_toe.clj
+
+### Chapter02
+
+- [ten_armed_testbed.clj](http://viewer.gorilla-repl.org/view.html?source=github&user=findmyway&repo=reinforcement-learning-an-introduction&path=src/rl/chapter02/ten_armed_testbed.clj)
+
+### Chapter03
+
+- [grid_world.clj](http://viewer.gorilla-repl.org/view.html?source=github&user=findmyway&repo=reinforcement-learning-an-introduction&path=src/rl/chapter03/grid_world.clj)
+
+### Chapter04
+
+- [car_rental.clj](http://viewer.gorilla-repl.org/view.html?source=github&user=findmyway&repo=reinforcement-learning-an-introduction&path=src/rl/chapter04/car_rental.clj)
+- [gamblers_problem.clj](http://viewer.gorilla-repl.org/view.html?source=github&user=findmyway&repo=reinforcement-learning-an-introduction&path=src/rl/chapter04/gamblers_problem.clj)
+- [grid_world.clj](http://viewer.gorilla-repl.org/view.html?source=github&user=findmyway&repo=reinforcement-learning-an-introduction&path=src/rl/chapter04/grid_world.clj)
+
+### Chapter05
+
+- [blackjack.clj](http://viewer.gorilla-repl.org/view.html?source=github&user=findmyway&repo=reinforcement-learning-an-introduction&path=src/rl/chapter05/blackjack.clj)
+- [infinite_variance.clj](http://viewer.gorilla-repl.org/view.html?source=github&user=findmyway&repo=reinforcement-learning-an-introduction&path=src/rl/chapter05/infinite_variance.clj)
+
+## Attribution
+
+Most of the codes are inspired by the [Python version](https://github.com/ShangtongZhang/reinforcement-learning-an-introduction).
 
 ## License
 

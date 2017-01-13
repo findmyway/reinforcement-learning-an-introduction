@@ -1,8 +1,26 @@
+;; gorilla-repl.fileformat = 1
+
+;; @@
 (ns rl.chapter04.car-rental
   (:require [incanter.stats :refer [pdf-poisson]]
             [clojure.core.matrix :as m]
-            [rl.util :refer [argmax]])
-  (:use debux.core))
+            [rl.util :refer [argmax]]
+            [clojure.string :as string])
+  (:use [plotly-clj.core]))
+;; @@
+;; =>
+;;; {"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}
+;; <=
+
+;; @@
+(online-init)
+;; @@
+;; =>
+;;; {"type":"html","content":"<script src=\"https://cdn.plot.ly/plotly-latest.min.js\" type=\"text/javascript\"></script>","value":"pr'ed value"}
+;; <=
+
+;; @@
+
 
 (def max-cars 20)
 (def max-move 5)
@@ -88,3 +106,35 @@
         [sv pl]))))
 
 (spit "resources/data/car-rental-statevalue" (first res))
+
+;; @@
+
+;; @@
+(let [datas (map read-string (string/split-lines (slurp "resources/data/car-rental-policy")))]
+  (-> (plotly)
+      (plot-seq
+        (for [d datas]
+          #(add-heatmap % :z d)))
+      (subplot :nrow 2)
+      (update-layout :width 700 :height 700)
+      (plot "RL-figure-4-2-a" :fileopt "overwrite")
+      embed-url))
+;; @@
+;; =>
+;;; {"type":"html","content":"<iframe height=\"600\" src=\"//plot.ly/~findmyway/114.embed\" width=\"800\"></iframe>","value":"pr'ed value"}
+;; <=
+
+;; @@
+(let [sv (read-string (slurp "resources/data/car-rental-statevalue"))]
+  (-> (plotly)
+      (add-surface :z sv)
+      (plot "RL-figure-4-2-b" :fileopt "overwrite")
+      embed-url))
+;; @@
+;; =>
+;;; {"type":"html","content":"<iframe height=\"600\" src=\"//plot.ly/~findmyway/112.embed\" width=\"800\"></iframe>","value":"pr'ed value"}
+;; <=
+
+;; @@
+
+;; @@
