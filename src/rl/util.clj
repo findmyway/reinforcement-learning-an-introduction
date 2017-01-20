@@ -37,3 +37,13 @@
           (cond
             (< v (nth ws mid)) (recur ws left mid)
             (>= v (nth ws mid)) (recur ws mid right)))))))
+
+(defn take-until
+  "Take all elements until (pred item) return true.
+  That element is included in the return coll"
+  [pred coll]
+  (lazy-seq
+   (when-let [s (seq coll)]
+     (if (pred (first coll))
+       [(first coll)]
+       (cons (first s) (take-until pred (rest s)))))))
