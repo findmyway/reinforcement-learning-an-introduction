@@ -40,7 +40,7 @@
         alpha 0.5
         reward -1
         get-action (fn [sav [r c]]
-                     (if (zero? (sample-binomial 1))
+                     (if (zero? (sample-binomial 1 :prob 0.1))
                        (->> (ffirst (argmax (m/select sav r c :all)))
                             int
                             (nth actions))
@@ -104,15 +104,19 @@
                  [7 10]))
 ;; @@
 ;; ->
-;;; [[:right :right :right :right :right :right :right :right :right :down]
-;;;  [:right    :up :right    :up :right :right :right  :down :right :down]
-;;;  [:right :right :right :right :right :right    :up :right :right :down]
-;;;  [:right :right :right :right    :up :right :right    :up :right :down]
-;;;  [:right :right :right :right    :up    :up    :up  :down  :left :left]
-;;;  [ :down :right :right :right :right    :up    :up :right :right :left]
-;;;  [ :left :right :right :right    :up    :up    :up    :up    :up :left]]
+;;; [[ :down  :down :right :right :right :right :right :right :right :down]
+;;;  [:right :right :right :right    :up :right  :down    :up    :up :down]
+;;;  [:right    :up :right  :left :right :right :right  :down    :up :down]
+;;;  [:right :right :right :right :right :right :right    :up :right :down]
+;;;  [ :down :right :right :right :right :right    :up  :down  :left :left]
+;;;  [ :down :right :right  :left :right    :up    :up    :up  :left :down]
+;;;  [:right :right :right :right    :up    :up    :up    :up    :up :left]]
 ;;; 
 ;; <-
 ;; =>
 ;;; {"type":"html","content":"<span class='clj-nil'>nil</span>","value":"nil"}
 ;; <=
+
+;; @@
+
+;; @@
